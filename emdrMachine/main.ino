@@ -9,6 +9,5 @@ void setup(void) {
 }
 
 void loop(void) {
-  animateLetter('b');
-  // lightsAnimation();
+  animateWord("league");
 }

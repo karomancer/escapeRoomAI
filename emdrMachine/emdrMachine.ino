@@ -4,7 +4,7 @@
 
 #include <Adafruit_NeoPixel.h>
 
-#define PIN_NEO_PIXEL 12  // The ESP32 pin GPIO16 connected to NeoPixel
+#define PIN_NEO_PIXEL 3  // The ESP32 pin GPIO16 connected to NeoPixel
 #define NUM_PIXELS 60     // The number of LEDs (pixels) on NeoPixel LED strip
 
 #define NUM_BIN_PLACES 6

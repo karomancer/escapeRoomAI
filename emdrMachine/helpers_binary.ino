@@ -1,4 +1,4 @@
-String letters = "abcdefghijklmnopqrstuvwxyz";
+String letters = "abcdefghijklmnopqrstuvwxyz0123456789";
 std::map<char, int> letterMap;
 
 void setupLetters() {
@@ -18,3 +18,4 @@ void itob(int num, int *binary) {
     binary[i] = digit;
   }
 }
+
