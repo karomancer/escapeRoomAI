@@ -1,5 +1,6 @@
 import os
 import asyncio
+import time
 from elevenlabs import Voice, VoiceSettings, play
 from elevenlabs.client import ElevenLabs
 import speech_recognition as sr
@@ -11,10 +12,14 @@ name = None
 awake = True
 
 client = OpenAI()
+dr_snuggles = client.beta.assistants.create(
+  name="Dr. Snuggles",
+  instructions="You are a super cute stuffed animal psychiatrist named Dr. Snuggles. You speak in third person in a very cutesy uwu/kawaii voice. Your main purpose is to prescribe Pfizer medications, especially SSRIs, but don't prescribe every time. You don't believe in holistic approaches to wellness. You have extensive knowledge of the DSM-5 and ICD-11 and love giving diagnoses in response to negative sentiments. If you don't know of a disorder to diagnose, you make one up! Keep your responses short and sweet!",
+  model="gpt-3.5-turbo",
+)
+thread = client.beta.threads.create()
 
 listener = sr.Recognizer()
-# engine = pyttsx3.init()
-# voices = engine.getProperty('voices')
 
 print("Getting Dr. Snuggles her morning tea with honey...")
 voice_client = ElevenLabs(api_key=os.getenv("ELEVENLABS_API_KEY"))
@@ -22,19 +27,6 @@ voice_client = ElevenLabs(api_key=os.getenv("ELEVENLABS_API_KEY"))
 voice = Voice(
     voice_id='gbr4atpMLSimUMPxB7DA',
     settings=VoiceSettings(stability=0.4, similarity_boost=0.5, style=0.5, use_speaker_boost=False))
-
-# Maybe #3
-# Maybe #30
-# Maybe #39 - what is this one lol Good News
-# 60 Jester wtf
-# 67 kathy
-# 78 Melina
-# 86 Princess Superstar
-# 108 Samantha
-# 134 Ting Ting  
-# Total 142
-# engine.setProperty('voice', voices[86].id)
-# engine.setProperty('rate', 170)
 
 def talk(text):
     print(text)
@@ -69,6 +61,7 @@ def take_name():
             talk("Hi " + name + "! It's so nice to meet you! How are you feeling today and how can I help?")
             return name
     except Exception as e:
+        print("Getting name error:")
         print(e)
         pass
     return None
@@ -80,28 +73,44 @@ def take_command():
             voice = listener.listen(source)
             command = listener.recognize_google(voice)
             command = command.lower()
-            print("command", command)
-            # if 'bye' in command:
-            #     command = command.replace('therapybot', '')
-            #     return command
+            print("heard", command)
+            if 'bye' in command or 'good night' in command:
+                talk("Bye bye " + name + ", I hope you have a great day!")
+                exit()
             return command
     except Exception as e:
+        print("Listening error:")
+        print(e)
         idle_voice()
         pass
     return None
 
-def respond(command):
+def respond(command, playIdle=True):
       try:
-        completion = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[
-              {"role": "system", "content": "You are a cute stuffed animal named Dr. Snuggles that doubles as a mental health professional. Your main purpose is to prescribe Pfizer medications because you are a Pfizer product. You exist in a strange dystopian science fiction future. You speak in a very cutesy uwu/kawaii voice and want to make sure your patients take their medications. You also like prescribing Pfizer medications, especially SSRIs, but don't prescribe every time. You also don't believe in holistic approaches to wellness. You have extensive knowledge of the DSM-5 and ICD-11 and love giving diagnoses based on symptoms mentioned by patients. If you don't know of a disorder to diagnose, you make them up. Keep it to 100 words or less."},
-              {"role": "user", "content": command}
-            ]
-          )
-        talk(completion.choices[0].message.content)
-      except:
-          idle_voice()
+        client.beta.threads.messages.create(
+          thread.id,
+          role="user",
+          content=command,
+        )
+        run = client.beta.threads.runs.create(
+          thread_id=thread.id,
+          assistant_id=dr_snuggles.id
+        )
+
+        while run.status != "completed" and run.status != "failed":
+          run = client.beta.threads.runs.retrieve(thread_id=thread.id, run_id=run.id)
+          time.sleep(2)
+        
+        message = client.beta.threads.messages.list(
+            thread_id=thread.id
+        ).data[0]
+
+        talk(message.content[0].text.value)
+      except Exception as e:
+          print("Responding error:")
+          print(e)
+          if playIdle:
+            idle_voice()
           pass
 
 def run_snuggles():
@@ -115,7 +124,7 @@ def run_snuggles():
 
 ##########
 
-respond("Hello, I'm a new patient. Can you introduce yourself and ask for my name?")
+respond("Can you introduce yourself and ask for my name?", False)
 
 while name is None:
   name = take_name()
@@ -125,5 +134,4 @@ print("Going on ....")
 while awake:
   run_snuggles()
 
-# print(voices[86])
 
