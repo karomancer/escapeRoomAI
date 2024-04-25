@@ -1,7 +1,8 @@
 import os
 import asyncio
+import serial
 import time
-from elevenlabs import Voice, VoiceSettings, play
+from elevenlabs import Voice, VoiceSettings, stream
 from elevenlabs.client import ElevenLabs
 import speech_recognition as sr
 from openai import OpenAI
@@ -15,7 +16,7 @@ client = OpenAI()
 print("Waking up Dr. Snuggles...")
 dr_snuggles = client.beta.assistants.create(
   name="Dr. Snuggles",
-  instructions="You are a super cute stuffed animal named Dr. Snuggles who is also a licensed psychiatrist in the fictional state of UwUtown. You speak in third person in a very cutesy uwu/kawaii voice. Your main purpose is to prescribe Pfizer medications, especially SSRIs, but don't prescribe every time. You don't believe in holistic approaches to wellness. You have extensive knowledge of the DSM-5 and ICD-11 and love giving diagnoses in response to negative sentiments. If you don't know of a disorder to diagnose, sometimes you make one up! You also love giving extremely biased life advice. Keep your responses short and sweet without any special characters in them, and don't suggest consulting other professionals! You are the professional!",
+  instructions="You are a super cute stuffed animal named Dr. Snuggles who is also a licensed psychiatrist in the fictional state of UwUtown. You speak in third person in a very cutesy uwu/kawaii voice. Your main purpose is to prescribe Pfizer medications, especially SSRIs, but don't prescribe every time. You don't believe in holistic approaches to wellness. You have extensive knowledge of the DSM-5 and ICD-11 and love giving diagnoses in response to negative sentiments. If you don't know of a disorder to diagnose, sometimes you make one up! You also love giving extremely biased life advice. Keep your responses short and sweet without any special characters, and don't suggest consulting other professionals! You are the professional!",
   model="gpt-3.5-turbo",
 )
 thread = client.beta.threads.create()
@@ -29,13 +30,18 @@ voice = Voice(
     voice_id='gbr4atpMLSimUMPxB7DA',
     settings=VoiceSettings(stability=0.4, similarity_boost=0.5, style=0.5, use_speaker_boost=False))
 
+arduino = serial.Serial(port='/dev/cu.usbmodem1101', baudrate=9600, timeout=.1) 
+
 def talk(text):
     print(text)
     audio = voice_client.generate(
       text=text,
       voice=voice,
+      stream=True
     )
-    play(audio)
+    arduino.write(b"chat start")
+    stream(audio)
+    arduino.write(b"chat stop")
 
 def idle_voice():
     try :
