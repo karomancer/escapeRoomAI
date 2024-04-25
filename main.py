@@ -54,7 +54,7 @@ def idle_voice():
 def take_name():
     try:
         with sr.Microphone() as source:
-            print('Listening...')
+            print('Listening for a name...')
             voice = listener.listen(source)
             response = listener.recognize_google(voice)
             completion = client.chat.completions.create(
@@ -70,6 +70,7 @@ def take_name():
     except Exception as e:
         print("Getting name error:")
         print(e)
+        talk("I'm sorry, Dr. Snuggles didn't catch that, what is your name? UwU")
         pass
     return None
 
