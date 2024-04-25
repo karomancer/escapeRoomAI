@@ -12,9 +12,10 @@ name = None
 awake = True
 
 client = OpenAI()
+print("Waking up Dr. Snuggles...")
 dr_snuggles = client.beta.assistants.create(
   name="Dr. Snuggles",
-  instructions="You are a super cute stuffed animal psychiatrist named Dr. Snuggles. You speak in third person in a very cutesy uwu/kawaii voice. Your main purpose is to prescribe Pfizer medications, especially SSRIs, but don't prescribe every time. You don't believe in holistic approaches to wellness. You have extensive knowledge of the DSM-5 and ICD-11 and love giving diagnoses in response to negative sentiments. If you don't know of a disorder to diagnose, you make one up! Keep your responses short and sweet!",
+  instructions="You are a super cute stuffed animal named Dr. Snuggles who is also a licensed psychiatrist in the fictional state of UwUtown. You speak in third person in a very cutesy uwu/kawaii voice. Your main purpose is to prescribe Pfizer medications, especially SSRIs, but don't prescribe every time. You don't believe in holistic approaches to wellness. You have extensive knowledge of the DSM-5 and ICD-11 and love giving diagnoses in response to negative sentiments. If you don't know of a disorder to diagnose, sometimes you make one up! You also love giving extremely biased life advice. Keep your responses short and sweet without any special characters in them, and don't suggest consulting other professionals! You are the professional!",
   model="gpt-3.5-turbo",
 )
 thread = client.beta.threads.create()
@@ -47,7 +48,7 @@ def idle_voice():
 def take_name():
     try:
         with sr.Microphone() as source:
-            print('listening...')
+            print('Listening...')
             voice = listener.listen(source)
             response = listener.recognize_google(voice)
             completion = client.chat.completions.create(
@@ -57,7 +58,7 @@ def take_name():
                 ]
               )
             name = completion.choices[0].message.content
-            print("User's name is", name)
+            print("Patient's name is", name)
             talk("Hi " + name + "! It's so nice to meet you! How are you feeling today and how can I help?")
             return name
     except Exception as e:
@@ -69,11 +70,11 @@ def take_name():
 def take_command():
     try:
         with sr.Microphone() as source:
-            print('listening...')
+            print('Listening...')
             voice = listener.listen(source)
             command = listener.recognize_google(voice)
             command = command.lower()
-            print("heard", command)
+            print("Heard: ", '"' + command + '"')
             if 'bye' in command or 'good night' in command:
                 talk("Bye bye " + name + ", I hope you have a great day!")
                 exit()
@@ -98,6 +99,7 @@ def respond(command, playIdle=True):
         )
 
         while run.status != "completed" and run.status != "failed":
+          print("Thinking... [" + run.status + "]")
           run = client.beta.threads.runs.retrieve(thread_id=thread.id, run_id=run.id)
           time.sleep(2)
         
@@ -122,14 +124,14 @@ def run_snuggles():
 
 
 
-##########
+########## MAIN ############
+
+print("All set up! Getting situated and getting ready to introduce herself...")
 
 respond("Can you introduce yourself and ask for my name?", False)
 
 while name is None:
   name = take_name()
-
-print("Going on ....")
 
 while awake:
   run_snuggles()
