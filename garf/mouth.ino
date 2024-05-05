@@ -44,10 +44,10 @@ void pullTongueBackIn() {
   tongueServo.write(MIN_TONGUE_POS);
 }
 
-void openMouth() {
-  for (mouthPos = MIN_MOUTH_POS; mouthPos <= MAX_TONGUE_POS / 4; mouthPos++) {
+void openMouth(int openAmount) {
+  for (mouthPos = MIN_MOUTH_POS; mouthPos <= openAmount; mouthPos++) {
     mouthServo.write(mouthPos);
-    delay(random(1, 20));
+    delay(random(1, 5));
   }
 }
 
@@ -55,14 +55,14 @@ void closeMouth() {
   // Close mouth, put tongue back in
   while (mouthPos >= MIN_MOUTH_POS) {
     mouthServo.write(mouthPos--);
-    delay(random(1, 20));
+    delay(random(1, 5));
   }
 
   mouthServo.write(MIN_MOUTH_POS);
 }
 
 void chat() {
-  openMouth();
+  openMouth(random(0, 1) * MAX_MOUTH_POS);
   closeMouth();
   delay(random(1, 10));
 }

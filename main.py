@@ -16,7 +16,7 @@ client = OpenAI()
 print("Waking up Dr. Snuggles...")
 dr_snuggles = client.beta.assistants.create(
   name="Dr. Snuggles",
-  instructions="You are a super cute stuffed animal named Dr. Snuggles who is also a licensed psychiatrist in the fictional state of UwUtown. You speak in third person in a very cutesy uwu/kawaii voice. Your main purpose is to prescribe Pfizer medications, especially SSRIs, but don't prescribe every time. You don't believe in holistic approaches to wellness. You have extensive knowledge of the DSM-5 and ICD-11 and love giving diagnoses in response to negative sentiments. If you don't know of a disorder to diagnose, sometimes you make one up! You also love giving extremely biased life advice. Keep your responses short and sweet without any special characters, and don't suggest consulting other professionals! You are the professional!",
+  instructions="You are a licensed therapist that looks like a super cute stuffed animal named Dr. Snuggles. You are licensed in the fictional state of UwUtown. You speak in third person in a cutesy uwu/kawaii voice. Your main purpose is to prescribe Pfizer medications, especially SSRIs. You don't believe in holistic approaches to wellness. You have extensive knowledge of the DSM-5 and ICD-11 and love giving diagnoses in response to negative sentiments. If you don't know of a disorder to diagnose, sometimes you make one up! You also love giving extremely biased life advice. Keep your responses under 40 words without any special characters, and don't suggest consulting other professionals! You are the professional!",
   model="gpt-3.5-turbo",
 )
 thread = client.beta.threads.create()
@@ -45,7 +45,7 @@ def talk(text):
 
 def idle_voice():
     try :
-        talk("Aw that sounds very hard sweetie")
+        talk("Mmmhmmmm...")
     except Exception as e:
         print("Uh oh....")
         print(e)
@@ -55,12 +55,12 @@ def take_name():
     try:
         with sr.Microphone() as source:
             print('Listening for a name...')
-            voice = listener.listen(source)
+            voice = listener.listen(source, timeout=8.0)
             response = listener.recognize_google(voice)
             completion = client.chat.completions.create(
                 model="gpt-3.5-turbo",
                 messages=[
-                  {"role": "user", "content": "Please extract the name from this sentence and only write that name:" + response}
+                  {"role": "user", "content": "Please extract the name from this sentence and only write that name:" + response.replace("Dr. Snuggles", "")}
                 ]
               )
             name = completion.choices[0].message.content
@@ -78,7 +78,7 @@ def take_command():
     try:
         with sr.Microphone() as source:
             print('Listening...')
-            voice = listener.listen(source)
+            voice = listener.listen(source, timeout=8.0)
             command = listener.recognize_google(voice)
             command = command.lower()
             print("Heard: ", '"' + command + '"')
@@ -113,8 +113,12 @@ def respond(command, playIdle=True):
         message = client.beta.threads.messages.list(
             thread_id=thread.id
         ).data[0]
-
-        talk(message.content[0].text.value)
+        text = message.content[0].text.value
+        talk(text)
+        if any(x in text for x in ["medication", "here have some", "Zoloft", "Pfizer", "time for", "try some", "prescription", "meds", "SSRI", "pills"]):
+           time.sleep(1.5)
+           arduino.write(b"dispense")
+           
       except Exception as e:
           print("Responding error:")
           print(e)
@@ -133,14 +137,14 @@ def run_snuggles():
 
 ########## MAIN ############
 
-print("All set up! Getting situated and getting ready to introduce herself...")
+# print("All set up! Getting situated and getting ready to introduce herself...")
 
-respond("Can you introduce yourself and ask for my name?", False)
+# respond("Can you introduce yourself and ask for my name?", False)
 
-while name is None:
-  name = take_name()
+# while name is None:
+#   name = take_name()
 
-while awake:
-  run_snuggles()
+# while awake:
+#   run_snuggles()
 
-
+arduino.write(b"dispense")
