@@ -1,26 +1,37 @@
 #include <Servo.h>
+#include <Adafruit_NeoPixel.h>
+
+/**
+ * Pin declarations
+ **/
+#define LED_PIN        2
+#define DISPENSER_PIN  3
+#define TONGUE_PIN     5
+#define MOUTH_PIN      6
+
+/**
+ * Loading light
+ **/ 
+#define NUM_PIXELS    16
+
+Adafruit_NeoPixel ring(NUM_PIXELS, LED_PIN, NEO_GRB);
 
 /**
  * Dispenser constants
  **/
-const int DISPENSER_PIN = 3;
+#define MIN_GEAR_VALUE 0
+#define MAX_GEAR_VALUE 175
 
 Servo dispenserServo;
-
-const int MIN_GEAR_VALUE = 0;
-const int MAX_GEAR_VALUE = 175;
 
 /**
  * Mouth constants
  **/
-// const int MOUTH_PIN = 3;
-const int MOUTH_PIN = 6;
-const int MIN_MOUTH_POS = 25;
-const int MAX_MOUTH_POS = 105; // 95 to chat, max 130 to install
+#define MIN_MOUTH_POS   25
+#define MAX_MOUTH_POS   105 // 95 to chat, max 130 to install
 
-const int TONGUE_PIN = 5;
-const int MIN_TONGUE_POS = 38;
-const int MAX_TONGUE_POS = 105;
+#define MIN_TONGUE_POS  38
+#define MAX_TONGUE_POS  105
 
 Servo mouthServo;
 Servo tongueServo;

@@ -59,11 +59,12 @@ void closeMouth() {
   }
 
   mouthServo.write(MIN_MOUTH_POS);
+  clearLight();
 }
 
 void chat() {
   openMouth((int) random(MIN_MOUTH_POS, MAX_MOUTH_POS));
-  delay(random(1, 100));
+  delay(random(1, 50));
   closeMouth();
-  delay(random(1, 100));
+  delay(random(1, 50));
 }

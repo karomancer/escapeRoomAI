@@ -147,4 +147,4 @@ def run_snuggles():
 # while awake:
 #   run_snuggles()
 
-arduino.write(b"dispense")
+arduino.write(b"think")

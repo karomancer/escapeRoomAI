@@ -1,53 +1,69 @@
 #include <Servo.h>
 
 bool isChatting = false;
-bool isDispensing = false;
-bool isMouthOpening = false;
+bool isThinking = false;
+
+void defaultAllMotors() {
+  mouthServo.write(MIN_MOUTH_POS);
+  tongueServo.write(MIN_TONGUE_POS);
+  dispenserServo.write(MAX_GEAR_VALUE);
+}
+
+void attachAllMotors() {
+  defaultAllMotors();
+  mouthServo.attach(MOUTH_PIN);
+  tongueServo.attach(TONGUE_PIN);
+  dispenserServo.attach(DISPENSER_PIN);
+}
+
+void detachAllMotors() {
+  defaultAllMotors();
+  dispenserServo.detach();
+  mouthServo.detach();
+  tongueServo.detach();
+}
 
 void setup() {
   Serial.begin(9600);
-
+  attachAllMotors();
   /**
-   * Set up dispenser
+   * Set up light
    **/
-  mouthServo.attach(MOUTH_PIN);
-  tongueServo.attach(TONGUE_PIN);
-
-  mouthServo.write(MIN_MOUTH_POS);
-  tongueServo.write(MIN_TONGUE_POS);
-
-  /**
-   * Set up mouth
-   **/
-  dispenserServo.attach(DISPENSER_PIN);
-  dispenserServo.write(MAX_GEAR_VALUE);
+  ring.begin();
+  ring.setBrightness(32);
+  ring.show();
 }
 
 void loop() {
   while (!Serial.available()) {
-    if (isDispensing) {
+    if (isThinking) {
+      detachAllMotors();
+      think();
+    } else {
+      attachAllMotors();
+      if (isChatting) {
+        chat();
+      }
+    }
+  };
+  String command = Serial.readString();
+  if (command == "think") {
+    isThinking = true;
+  } else {
+    isThinking = false;
+    if (command == "dispense") {
       dispensePill();
       stickTongueOut();
       delay(3000);
       pullTongueBackIn();
       delay(1000);
-      isDispensing = false;
-    } else if (isChatting) {
-      chat();
-    } else if (isMouthOpening) {
+    } else if (command == "mouth open") {
       openMouth(MAX_MOUTH_POS);
-      isMouthOpening = false;
+    } else if (command == "chat start") {
+      isChatting = true;
+      delay(250);
+    } else {
+      isChatting = false;
     }
-  };
-  String command = Serial.readString();
-  if (command == "dispense") {
-    isDispensing = true;
-  } else if (command == "chat start") {
-    isChatting = true;
-    delay(250);
-  } else if (command = "mouth open") {
-    isMouthOpening = true;
-  } else {
-    isChatting = false;
   }
 }
