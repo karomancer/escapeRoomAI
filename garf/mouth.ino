@@ -62,7 +62,8 @@ void closeMouth() {
 }
 
 void chat() {
-  openMouth(random(0, 1) * MAX_MOUTH_POS);
+  openMouth((int) random(MIN_MOUTH_POS, MAX_MOUTH_POS));
+  delay(random(1, 100));
   closeMouth();
-  delay(random(1, 10));
+  delay(random(1, 100));
 }

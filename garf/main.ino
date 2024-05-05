@@ -19,13 +19,8 @@ void setup() {
   /**
    * Set up mouth
    **/
-  pinMode(BTN, INPUT);
-
-  firstGate.attach(FIRST_GATE);
-  firstGate.write(MAX);
-
-  secondGate.attach(SECOND_GATE);
-  secondGate.write(MIN);
+  dispenserServo.attach(DISPENSER_PIN);
+  dispenserServo.write(MAX_GEAR_VALUE);
 }
 
 void loop() {
@@ -55,13 +50,4 @@ void loop() {
   } else {
     isChatting = false;
   }
-
-  // Test pill dispensing with button
-  // if (digitalRead(BTN) == HIGH) {
-  //   dispensePill();
-  //   stickTongueOut();
-  //   delay(3000);
-  //   pullTongueBackIn();
-  //   delay(1000);
-  // }
 }

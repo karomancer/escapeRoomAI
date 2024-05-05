@@ -3,15 +3,12 @@
 /**
  * Dispenser constants
  **/
-const int BTN = 2;
-const int FIRST_GATE = 3;
-const int SECOND_GATE = 4;
+const int DISPENSER_PIN = 3;
 
-Servo firstGate;
-Servo secondGate;
+Servo dispenserServo;
 
-const int MIN = 35;
-const int MAX = 175;
+const int MIN_GEAR_VALUE = 0;
+const int MAX_GEAR_VALUE = 175;
 
 /**
  * Mouth constants
