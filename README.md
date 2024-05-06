@@ -25,3 +25,4 @@ If you're running this on Linux (as it is intended to be), you might need to do 
 - Start PulseAudio
     - If `$ pacmd list-sources` returns an error stating the Daemon is not running, try starting it with `$ pulseaudio --start` (and if you need to stop it, you can use `$ pulseaudio --kill`)
 - `$ apt-get install portaudio19-dev `
+- To add to boot, add to `/etc/rc.local` and be sure to install packages globally (`$> sudo pip install -r requirements.txt`)
