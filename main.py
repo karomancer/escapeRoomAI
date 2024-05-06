@@ -104,6 +104,9 @@ def talk(text):
 def think():
     arduino.write(b"think")
 
+def listen():
+   arduino.write(b"listen")
+
 def bedtime():
     arduino.write(b"sleep")
 
@@ -119,6 +122,7 @@ def take_name():
     try:
         with microphone as source:
             print('Listening for a name...')
+            listen()
             voice = listener.listen(source, timeout=5.0)
             response = listener.recognize_google(voice)
             think()
@@ -143,17 +147,19 @@ def take_command():
     try:
         with microphone as source:
             print('Listening...')
+            listen()
             voice = listener.listen(source, timeout=8.0)
             command = listener.recognize_google(voice)
-            think()
-            command = command.lower()
-            print("Heard: ", '"' + command + '"')
-            if 'bye' in command or 'good night' in command:
-                talk("Bye bye " + name + ", I hope you have a great day!")
-                bedtime()
-                time.sleep(5)
-                exit()
-            return command
+            if "Dr. Snuggles" in command:
+              think()
+              command = command.lower()
+              print("Heard: ", '"' + command + '"')
+              if 'bye' in command or 'good night' in command:
+                  talk("Bye bye " + name + ", I hope you have a great day!")
+                  bedtime()
+                  time.sleep(5)
+                  exit()
+              return command
     except Exception as e:
         print("Listening error:")
         print(e)

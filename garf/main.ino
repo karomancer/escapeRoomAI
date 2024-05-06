@@ -70,7 +70,6 @@ void loop() {
       openMouth(MAX_MOUTH_POS);
     } else if (command == "chat start") {
       isChatting = true;
-      delay(250);
     } else if (command == "wake") {
       detachAllMotors();
       wakeup();
@@ -79,6 +78,8 @@ void loop() {
       detachAllMotors();
       sleep();
       attachAllMotors();
+    } else if (command == "listen") {
+      listen();
     } else if (command == "error mic") {
       detachAllMotors();
       errorMic();
