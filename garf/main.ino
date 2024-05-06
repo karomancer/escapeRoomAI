@@ -8,6 +8,8 @@ void defaultAllMotors() {
   mouthServo.write(MIN_MOUTH_POS);
   tongueServo.write(MIN_TONGUE_POS);
   dispenserServo.write(MAX_GEAR_VALUE);
+
+  closeMouth();
 }
 
 void attachAllMotors() {
@@ -74,7 +76,7 @@ void loop() {
       delay(1000);
     } else if (command == "mouth open") {
       openMouth(MAX_MOUTH_POS);
-    } else if (command == "chat") {
+    } else if (command == "chat start") {
       isChatting = true;
     } else if (command == "wake") {
       detachAllMotors();
