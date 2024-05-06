@@ -30,7 +30,7 @@ voice = Voice(
     voice_id='gbr4atpMLSimUMPxB7DA',
     settings=VoiceSettings(stability=0.4, similarity_boost=0.5, style=0.5, use_speaker_boost=False))
 
-arduino = serial.Serial(port='/dev/cu.usbmodem1101', baudrate=9600, timeout=.1) 
+arduino = serial.Serial(port='/dev/cu.usbmodem2101', baudrate=9600, timeout=.1) 
 
 def talk(text):
     print(text)
@@ -146,5 +146,6 @@ def run_snuggles():
 
 # while awake:
 #   run_snuggles()
+
 
 arduino.write(b"think")

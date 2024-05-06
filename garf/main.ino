@@ -40,7 +40,10 @@ void loop() {
       detachAllMotors();
       think();
     } else {
-      attachAllMotors();
+      if (!mouthServo.attached()) {
+        attachAllMotors();
+      }
+      
       if (isChatting) {
         chat();
       }

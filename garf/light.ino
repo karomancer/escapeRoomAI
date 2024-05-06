@@ -3,7 +3,7 @@ void think() {
     for (int i = 0; i < ring.numPixels(); i++) {
       ring.setPixelColor(i, c);
       ring.show();
-      delay(10);
+      delay(50);
     }
   }
 }
