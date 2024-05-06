@@ -1,8 +1,10 @@
 import os
 import sounddevice
+import random
 import argparse
 import serial
 import time
+import re
 
 from elevenlabs import Voice, VoiceSettings, stream
 from elevenlabs.client import ElevenLabs
@@ -11,6 +13,12 @@ from openai import OpenAI
 from dotenv import load_dotenv
 
 load_dotenv()
+
+def clean_string(text):
+  rep = { "~": "", "*giggles*": "UwU", "*": ""}
+  rep = dict((re.escape(k), v) for k, v in rep.items()) 
+  pattern = re.compile("|".join(rep.keys()))
+  return pattern.sub(lambda m: rep[re.escape(m.group(0))], text)
 
 arduino = serial.Serial(port=os.getenv("USB_PORT"), baudrate=9600, timeout=.1) 
 
@@ -43,7 +51,7 @@ else:
    speaker_index = 0
 
 if speaker_index == -1 and speaker_name:
-  print("Couldn't find speaker bcm. Exiting from program.")
+  print("Couldn't find speaker " + speaker_name + ". Exiting from program.")
   arduino.write(b"error speaker")
   exit()
 
@@ -85,7 +93,7 @@ voice = Voice(
 def talk(text):
     print(text)
     audio = voice_client.generate(
-      text=text,
+      text=clean_string(text),
       voice=voice,
       stream=True
     )
@@ -101,7 +109,7 @@ def bedtime():
 
 def idle_voice():
     try :
-        talk("Mmmhmmmm...")
+        talk(random.choice(["Mmmm", "Mmmhmmmm...", "Hmmmm", "Tell me more about how you're feeling...", "What else is on your mind?"]))
     except Exception as e:
         print("Uh oh....")
         print(e)
@@ -175,7 +183,7 @@ def respond(command, playIdle=True):
         ).data[0]
         text = message.content[0].text.value
         talk(text)
-        if any(x in text for x in ["medication", "here have some", "Zoloft", "Pfizer", "time for", "try some", "prescription", "meds", "SSRI", "Xanax", "pills"]):
+        if any(x in text for x in ["medication", "here have some", "Zoloft", "Pfizer", "time for", "try some", "prescription", "meds", "SSRI", "Xanax", "Sertraline", "dose", "pills"]):
            time.sleep(1.5)
            arduino.write(b"dispense")
            
