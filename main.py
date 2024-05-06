@@ -97,9 +97,9 @@ def talk(text):
       voice=voice,
       stream=True
     )
-    arduino.write(b"chat start")
+    arduino.write(b"chat")
     stream(audio)
-    arduino.write(b"chat stop")
+    listen()
 
 def think():
     arduino.write(b"think")

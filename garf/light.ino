@@ -10,19 +10,12 @@ void wakeup() {
 }
 
 void listen() {
-  ring.setBrightness(30);
+  ring.setBrightness(10);
   for (int i = 0; i < ring.numPixels(); i++) {
     ring.setPixelColor(i, 0xFFFFFF);
     ring.show();
+    delay(10);
   }
-  for (int j = 20; j < 31; j++) {
-    ring.setBrightness(j);
-    for (int i = 0; i < ring.numPixels(); i++) {
-      ring.setPixelColor(i, 0xFFFFFF);
-      ring.show();
-    }
-  }
-  delay(30);
 }
 
 void think() {

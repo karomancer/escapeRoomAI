@@ -43,10 +43,8 @@ void loop() {
       detachAllMotors();
       wakeup();
     } else if (isThinking) {
-      detachAllMotors();
       think();
     } else if (isListening) {
-      detachAllMotors();
       listen();
     } else {
       if (isChatting) {
@@ -57,16 +55,21 @@ void loop() {
   String command = Serial.readString();
   isWakingUp = false;
   if (command == "think") {
+    detachAllMotors();
     isThinking = true;
   } else if (command == "listen") {
+    detachAllMotors();
+    isChatting = false;
     isListening = true;
   } else {
-    if (!mouthServo.attached()) {
+    if (!mouthServo.attached() || !tongueServo.attached() || !dispenserServo.attached()) {
       attachAllMotors();
     }
 
+    clearLight();
     isThinking = false;
     isListening = false;
+    isChatting = false;
     if (command == "dispense") {
       dispensePill();
       stickTongueOut();
@@ -75,7 +78,7 @@ void loop() {
       delay(1000);
     } else if (command == "mouth open") {
       openMouth(MAX_MOUTH_POS);
-    } else if (command == "chat start") {
+    } else if (command == "chat") {
       isChatting = true;
     } else if (command == "wake") {
       detachAllMotors();
@@ -91,8 +94,6 @@ void loop() {
     } else if (command == "error speaker") {
       detachAllMotors();
       errorSpeaker();
-    } else {
-      isChatting = false;
     }
   }
 }
