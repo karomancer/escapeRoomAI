@@ -4,6 +4,8 @@ bool isWakingUp = true;
 bool isChatting = false;
 bool isThinking = false;
 
+void (*resetFunc)(void) = 0;
+
 void defaultAllMotors() {
   tongueServo.write(MIN_TONGUE_POS);
 
@@ -15,7 +17,6 @@ void attachAllMotors() {
   mouthServo.attach(MOUTH_PIN);
   tongueServo.attach(TONGUE_PIN);
   dispenserServo.attach(DISPENSER_PIN);
-  defaultAllMotors();
 }
 
 void detachAllMotors() {
@@ -32,6 +33,7 @@ void setup() {
   ring.setBrightness(32);
   ring.show();
   attachAllMotors();
+  defaultAllMotors();
 }
 
 void loop() {
@@ -89,6 +91,8 @@ void loop() {
     } else if (command == "error speaker") {
       detachAllMotors();
       errorSpeaker();
+    } else if (command == "reset") {
+      resetFunc();
     }
   }
 }
