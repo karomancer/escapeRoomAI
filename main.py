@@ -1,13 +1,25 @@
 import os
 import asyncio
+import argparse
 import serial
 import time
+
 from elevenlabs import Voice, VoiceSettings, stream
 from elevenlabs.client import ElevenLabs
 import speech_recognition as sr
 from openai import OpenAI
 from dotenv import load_dotenv
+
 load_dotenv()
+
+########## CLI setup ############
+parser = argparse.ArgumentParser(
+    prog='Dr. Snuggles',
+    description='Script for operating the (fictitious) Pfuzzy Pharmaceuticals robot psychiatrist: Dr. Snuggles',
+    epilog='Contact @karomancer for more information.')
+parser.add_argument('-c', "--command")
+
+########## Default program setup ############
 
 name = None
 awake = True
@@ -136,16 +148,17 @@ def run_snuggles():
 
 
 ########## MAIN ############
+print("All set up! Getting situated and getting ready to introduce herself...")
 
-# print("All set up! Getting situated and getting ready to introduce herself...")
+args = parser.parse_args()
+if (args.command):
+   arduino.write(bytes(args.command, 'utf-8'))
+else:
+  respond("Can you introduce yourself and ask for my name?", False)
 
-# respond("Can you introduce yourself and ask for my name?", False)
+  while name is None:
+    name = take_name()
 
-# while name is None:
-#   name = take_name()
+  while awake:
+    run_snuggles()
 
-# while awake:
-#   run_snuggles()
-
-
-arduino.write(b"think")
