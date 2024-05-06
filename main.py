@@ -61,6 +61,9 @@ def think():
 def wake():
     arduino.write(b"wake")
 
+def bedtime():
+    arduino.write(b"sleep")
+
 def idle_voice():
     try :
         talk("Mmmhmmmm...")
@@ -104,6 +107,8 @@ def take_command():
             print("Heard: ", '"' + command + '"')
             if 'bye' in command or 'good night' in command:
                 talk("Bye bye " + name + ", I hope you have a great day!")
+                bedtime()
+                time.sleep(5)
                 exit()
             return command
     except Exception as e:

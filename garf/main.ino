@@ -69,6 +69,10 @@ void loop() {
       detachAllMotors();
       wakeup();
       attachAllMotors();
+    } else if (command == "sleep") {
+      detachAllMotors();
+      sleep();
+      attachAllMotors();
     } else {
       isChatting = false;
     }

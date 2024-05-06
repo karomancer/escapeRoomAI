@@ -18,19 +18,14 @@ void think() {
   }
 }
 
-void rainbowLight() {
-  uint32_t elapsed, t, startTime = micros();
-  for (;;) {
-    t = micros();
-    elapsed = t - startTime;
-    if (elapsed > 5000000) break;  // Run for 5 seconds
-    uint32_t firstPixelHue = elapsed / 32;
-    for (int i = 0; i < ring.numPixels(); i++) {
-      uint32_t pixelHue = firstPixelHue + (i * 65536L / ring.numPixels());
-      ring.setPixelColor(i, ring.gamma32(ring.ColorHSV(pixelHue)));
+void sleep() {
+  for (int i = 0; i < ring.numPixels(); i++) {
+      ring.setPixelColor(i, 0x1FDEB4);
+      ring.show();
+      delay(10);
     }
-    ring.show();
-  }
+  delay(200);
+  clearLight();
 }
 
 void clearLight() {
