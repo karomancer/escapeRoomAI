@@ -122,7 +122,6 @@ def take_name():
     try:
         with microphone as source:
             print('Listening for a name...')
-            listen()
             voice = listener.listen(source, timeout=5.0)
             response = listener.recognize_google(voice)
             think()
@@ -147,7 +146,6 @@ def take_command():
     try:
         with microphone as source:
             print('Listening...')
-            listen()
             voice = listener.listen(source, timeout=8.0)
             command = listener.recognize_google(voice)
             if "Dr. Snuggles" in command:
