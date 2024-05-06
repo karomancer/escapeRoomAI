@@ -99,7 +99,6 @@ def talk(text):
     )
     arduino.write(b"chat")
     stream(audio)
-    listen()
 
 def think():
     arduino.write(b"think")
@@ -192,6 +191,7 @@ def respond(command, playIdle=True):
            time.sleep(1.5)
            arduino.write(b"dispense")
            time.sleep(8)
+        listen()
            
       except Exception as e:
           print("Responding error:")
