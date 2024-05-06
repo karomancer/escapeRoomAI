@@ -76,7 +76,7 @@ def take_name():
     try:
         with sr.Microphone() as source:
             print('Listening for a name...')
-            voice = listener.listen(source, timeout=8.0)
+            voice = listener.listen(source, timeout=5.0)
             response = listener.recognize_google(voice)
             think()
             completion = client.chat.completions.create(
