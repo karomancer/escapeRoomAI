@@ -103,9 +103,11 @@ def talk(text):
 
 def think():
     arduino.write(b"think")
+    time.sleep(2)
 
 def listen():
-   arduino.write(b"listen")
+    arduino.write(b"listen")
+    time.sleep(1)
 
 def bedtime():
     arduino.write(b"sleep")

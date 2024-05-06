@@ -20,7 +20,7 @@ void listen() {
 
 void think() {
   ring.setBrightness(20);
-  for (uint32_t c = 0xFFFFFF; c; c >>= 1) {
+  for (uint32_t c = 0xFFFFFF; c; c >>= 2) {
     for (int i = 0; i < ring.numPixels(); i++) {
       ring.setPixelColor(i, c);
       ring.show();
