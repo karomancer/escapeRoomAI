@@ -189,6 +189,7 @@ def respond(command, playIdle=True):
         if any(x in text for x in ["medication", "here have some", "Zoloft", "Pfizer", "time for", "try some", "prescription", "meds", "SSRI", "Xanax", "Sertraline", "dose", "pills"]):
            time.sleep(1.5)
            arduino.write(b"dispense")
+           time.sleep(8)
            
       except Exception as e:
           print("Responding error:")

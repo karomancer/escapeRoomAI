@@ -3,7 +3,6 @@
 bool isWakingUp = true;
 bool isChatting = false;
 bool isThinking = false;
-bool isListening = false;
 
 void defaultAllMotors() {
   mouthServo.write(MIN_MOUTH_POS);
@@ -44,8 +43,6 @@ void loop() {
       wakeup();
     } else if (isThinking) {
       think();
-    } else if (isListening) {
-      listen();
     } else {
       if (isChatting) {
         chat();
@@ -58,9 +55,9 @@ void loop() {
     detachAllMotors();
     isThinking = true;
   } else if (command == "listen") {
-    detachAllMotors();
     isChatting = false;
-    isListening = true;
+    detachAllMotors();
+    listen();
   } else {
     if (!mouthServo.attached() || !tongueServo.attached() || !dispenserServo.attached()) {
       attachAllMotors();
@@ -68,7 +65,6 @@ void loop() {
 
     clearLight();
     isThinking = false;
-    isListening = false;
     isChatting = false;
     if (command == "dispense") {
       dispensePill();
