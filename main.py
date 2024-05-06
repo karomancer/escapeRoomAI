@@ -12,6 +12,17 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+mic_index = -1
+for index, name in enumerate(sr.Microphone.list_microphone_names()):
+   if ("PnP Sound Device" in name):
+      mic_index = index
+      break
+   
+if mic_index == -1:
+  print("Couldn't find microphone. Exiting from program.")
+  exit()
+
+print("Found mic at index " + str(mic_index))
 arduino = serial.Serial(port=os.getenv("USB_PORT"), baudrate=9600, timeout=.1) 
 
 ########## CLI setup ############
@@ -36,6 +47,7 @@ dr_snuggles = client.beta.assistants.create(
 thread = client.beta.threads.create()
 
 listener = sr.Recognizer()
+microphone = sr.Microphone(device_index=mic_index)
 
 print("Getting Dr. Snuggles her morning tea with honey...")
 voice_client = ElevenLabs(api_key=os.getenv("ELEVENLABS_API_KEY"))
@@ -71,7 +83,7 @@ def idle_voice():
     
 def take_name():
     try:
-        with sr.Microphone() as source:
+        with microphone as source:
             print('Listening for a name...')
             voice = listener.listen(source, timeout=5.0)
             response = listener.recognize_google(voice)
@@ -95,7 +107,7 @@ def take_name():
 
 def take_command():
     try:
-        with sr.Microphone() as source:
+        with microphone as source:
             print('Listening...')
             voice = listener.listen(source, timeout=8.0)
             command = listener.recognize_google(voice)
