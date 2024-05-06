@@ -1,5 +1,5 @@
 import os
-import asyncio
+import sounddevice
 import argparse
 import serial
 import time
