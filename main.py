@@ -31,6 +31,7 @@ parser = argparse.ArgumentParser(
     description='Script for operating the (fictitious) Pfuzzy Pharmaceuticals robot psychiatrist: Dr. Snuggles',
     epilog='Contact @karomancer for more information.')
 parser.add_argument('-c', "--command")
+parser.add_argument('-s', "--say")
 
 ########## Default program setup ############
 
@@ -175,6 +176,8 @@ print("All set up!")
 args = parser.parse_args()
 if (args.command):
    arduino.write(bytes(args.command, 'utf-8'))
+if (args.say):
+   talk(args.say)
 else:
   print("Getting situated and getting ready to introduce herself...")
   respond("Can you introduce yourself and ask for my name?", False)
