@@ -112,7 +112,7 @@ def bedtime():
 
 def idle_voice():
     try :
-        talk(random.choice(["Mmmm", "Mmmhmmmm...", "Hmmmm", "Tell me more about how you're feeling...", "What else is on your mind?", "Please start your sentence with 'Dr. Snuggles' if you want my expert advice!"]))
+        talk(random.choice(["Mmmm", "Mmmhmmmm...", "Hmmmm", "Tell me more about how you're feeling...", "What else is on your mind?"]))
     except Exception as e:
         print("Uh oh....")
         print(e)
@@ -148,16 +148,15 @@ def take_command():
             print('Listening...')
             voice = listener.listen(source, timeout=8.0)
             command = listener.recognize_google(voice)
-            if "Dr. Snuggles" in command:
-              think()
-              command = command.lower()
-              print("Heard: ", '"' + command + '"')
-              if 'bye' in command or 'good night' in command:
-                  talk("Bye bye " + name + ", I hope you have a great day!")
-                  bedtime()
-                  time.sleep(5)
-                  exit()
-              return command
+            think()
+            command = command.lower()
+            print("Heard: ", '"' + command + '"')
+            if 'bye' in command or 'good night' in command:
+                talk("Bye bye " + name + ", I hope you have a great day!")
+                bedtime()
+                time.sleep(5)
+                exit()
+            return command
     except Exception as e:
         print("Listening error:")
         print(e)
