@@ -12,18 +12,43 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+arduino = serial.Serial(port=os.getenv("USB_PORT"), baudrate=9600, timeout=.1) 
+
+mic_name = os.getenv("MIC_NAME")
 mic_index = -1
-for index, name in enumerate(sr.Microphone.list_microphone_names()):
-   if ("PnP Sound Device" in name):
-      mic_index = index
-      break
+if mic_name:
+  for index, name in enumerate(sr.Microphone.list_microphone_names()):
+    if (mic_name in name):
+        mic_index = index
+        break
+else:
+   mic_index = 0
    
 if mic_index == -1:
   print("Couldn't find microphone. Exiting from program.")
+  arduino.write(b"error mic")
   exit()
 
 print("Found mic at index " + str(mic_index))
-arduino = serial.Serial(port=os.getenv("USB_PORT"), baudrate=9600, timeout=.1) 
+
+speaker_name = os.getenv("SPEAKER_NAME")
+speaker_index = -1
+
+if speaker_name:
+  for index, device in enumerate(sounddevice.query_devices()):
+    if speaker_name in device["name"]:
+        speaker_index = index
+        break
+else:
+   speaker_index = 0
+
+if speaker_index == -1 and speaker_name:
+  print("Couldn't find speaker bcm. Exiting from program.")
+  arduino.write(b"error speaker")
+  exit()
+
+sounddevice.default.device = speaker_index
+print("Found speaker at index " + str(speaker_index))
 
 ########## CLI setup ############
 parser = argparse.ArgumentParser(

@@ -1,5 +1,5 @@
 void wakeup() {
-  for (uint32_t c = 0xFF000000; c; c >>= 6) {
+  for (uint32_t c = 0x00ff90; c; c >>= 6) {
     for (int i = 0; i < ring.numPixels(); i++) {
       ring.setPixelColor(i, c);
       ring.show();
@@ -20,12 +20,30 @@ void think() {
 
 void sleep() {
   for (int i = 0; i < ring.numPixels(); i++) {
-      ring.setPixelColor(i, 0x1FDEB4);
-      ring.show();
-      delay(10);
-    }
+    ring.setPixelColor(i, 0x1FDEB4);
+    ring.show();
+    delay(10);
+  }
   delay(200);
   clearLight();
+}
+
+void errorMic() {
+  clearLight();
+  for (int i = 0; i < ring.numPixels() / 2; i++) {
+    ring.setPixelColor(i, 0xFF0000);
+    ring.show();
+    delay(10);
+  }
+}
+
+void errorSpeaker() {
+  clearLight();
+  for (int i = 0; i < ring.numPixels(); i++) {
+    ring.setPixelColor(i, 0xFF0000);
+    ring.show();
+    delay(10);
+  }
 }
 
 void clearLight() {

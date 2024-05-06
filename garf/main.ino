@@ -26,7 +26,7 @@ void detachAllMotors() {
 
 void setup() {
   Serial.begin(9600);
-  
+
   // Set up light
   ring.begin();
   ring.setBrightness(32);
@@ -79,6 +79,12 @@ void loop() {
       detachAllMotors();
       sleep();
       attachAllMotors();
+    } else if (command == "error mic") {
+      detachAllMotors();
+      errorMic();
+    } else if (command == "error speaker") {
+      detachAllMotors();
+      errorSpeaker();
     } else {
       isChatting = false;
     }
