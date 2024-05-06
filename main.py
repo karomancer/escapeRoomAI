@@ -12,6 +12,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+arduino = serial.Serial(port=os.getenv("USB_PORT"), baudrate=9600, timeout=.1) 
+
 ########## CLI setup ############
 parser = argparse.ArgumentParser(
     prog='Dr. Snuggles',
@@ -41,8 +43,6 @@ voice_client = ElevenLabs(api_key=os.getenv("ELEVENLABS_API_KEY"))
 voice = Voice(
     voice_id='gbr4atpMLSimUMPxB7DA',
     settings=VoiceSettings(stability=0.4, similarity_boost=0.5, style=0.5, use_speaker_boost=False))
-
-arduino = serial.Serial(port='/dev/cu.usbmodem2101', baudrate=9600, timeout=.1) 
 
 def talk(text):
     print(text)
