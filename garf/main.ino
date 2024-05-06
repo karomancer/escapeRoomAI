@@ -43,7 +43,7 @@ void loop() {
       if (!mouthServo.attached()) {
         attachAllMotors();
       }
-      
+
       if (isChatting) {
         chat();
       }
@@ -65,6 +65,10 @@ void loop() {
     } else if (command == "chat start") {
       isChatting = true;
       delay(250);
+    } else if (command == "wake") {
+      detachAllMotors();
+      wakeup();
+      attachAllMotors();
     } else {
       isChatting = false;
     }

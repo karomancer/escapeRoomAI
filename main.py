@@ -55,6 +55,12 @@ def talk(text):
     stream(audio)
     arduino.write(b"chat stop")
 
+def think():
+    arduino.write(b"think")
+
+def wake():
+    arduino.write(b"wake")
+
 def idle_voice():
     try :
         talk("Mmmhmmmm...")
@@ -69,6 +75,7 @@ def take_name():
             print('Listening for a name...')
             voice = listener.listen(source, timeout=8.0)
             response = listener.recognize_google(voice)
+            think()
             completion = client.chat.completions.create(
                 model="gpt-3.5-turbo",
                 messages=[
@@ -92,6 +99,7 @@ def take_command():
             print('Listening...')
             voice = listener.listen(source, timeout=8.0)
             command = listener.recognize_google(voice)
+            think()
             command = command.lower()
             print("Heard: ", '"' + command + '"')
             if 'bye' in command or 'good night' in command:
@@ -148,12 +156,14 @@ def run_snuggles():
 
 
 ########## MAIN ############
-print("All set up! Getting situated and getting ready to introduce herself...")
+print("All set up!")
 
 args = parser.parse_args()
 if (args.command):
    arduino.write(bytes(args.command, 'utf-8'))
 else:
+  wake()
+  print("Getting situated and getting ready to introduce herself...")
   respond("Can you introduce yourself and ask for my name?", False)
 
   while name is None:
