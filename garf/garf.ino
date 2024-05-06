@@ -20,7 +20,7 @@ Adafruit_NeoPixel ring(NUM_PIXELS, LED_PIN, NEO_GRB);
  * Dispenser constants
  **/
 #define MIN_GEAR_VALUE 0
-#define MAX_GEAR_VALUE 175
+#define MAX_GEAR_VALUE 180
 
 Servo dispenserServo;
 
