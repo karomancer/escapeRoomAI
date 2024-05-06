@@ -3,6 +3,7 @@
 bool isWakingUp = true;
 bool isChatting = false;
 bool isThinking = false;
+bool isListening = false;
 
 void defaultAllMotors() {
   mouthServo.write(MIN_MOUTH_POS);
@@ -44,6 +45,9 @@ void loop() {
     } else if (isThinking) {
       detachAllMotors();
       think();
+    } else if (isListening) {
+      detachAllMotors();
+      listen();
     } else {
       if (isChatting) {
         chat();
@@ -54,12 +58,15 @@ void loop() {
   isWakingUp = false;
   if (command == "think") {
     isThinking = true;
+  } else if (command == "listen") {
+    isListening = true;
   } else {
     if (!mouthServo.attached()) {
       attachAllMotors();
     }
 
     isThinking = false;
+    isListening = false;
     if (command == "dispense") {
       dispensePill();
       stickTongueOut();
@@ -78,8 +85,6 @@ void loop() {
       detachAllMotors();
       sleep();
       attachAllMotors();
-    } else if (command == "listen") {
-      listen();
     } else if (command == "error mic") {
       detachAllMotors();
       errorMic();

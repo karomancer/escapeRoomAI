@@ -119,10 +119,10 @@ def idle_voice():
         pass
     
 def take_name():
+    listen()
     try:
         with microphone as source:
             print('Listening for a name...')
-            listen()
             voice = listener.listen(source, timeout=5.0)
             response = listener.recognize_google(voice)
             think()
