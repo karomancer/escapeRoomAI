@@ -58,9 +58,6 @@ def talk(text):
 def think():
     arduino.write(b"think")
 
-def wake():
-    arduino.write(b"wake")
-
 def bedtime():
     arduino.write(b"sleep")
 
@@ -167,7 +164,6 @@ args = parser.parse_args()
 if (args.command):
    arduino.write(bytes(args.command, 'utf-8'))
 else:
-  wake()
   print("Getting situated and getting ready to introduce herself...")
   respond("Can you introduce yourself and ask for my name?", False)
 

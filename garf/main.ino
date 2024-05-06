@@ -1,5 +1,6 @@
 #include <Servo.h>
 
+bool isWakingUp = true;
 bool isChatting = false;
 bool isThinking = false;
 
@@ -10,10 +11,10 @@ void defaultAllMotors() {
 }
 
 void attachAllMotors() {
-  defaultAllMotors();
   mouthServo.attach(MOUTH_PIN);
   tongueServo.attach(TONGUE_PIN);
   dispenserServo.attach(DISPENSER_PIN);
+  defaultAllMotors();
 }
 
 void detachAllMotors() {
@@ -25,34 +26,39 @@ void detachAllMotors() {
 
 void setup() {
   Serial.begin(9600);
-  attachAllMotors();
-  /**
-   * Set up light
-   **/
+  
+  // Set up light
   ring.begin();
   ring.setBrightness(32);
   ring.show();
+
+  attachAllMotors();
 }
 
 void loop() {
   while (!Serial.available()) {
-    if (isThinking) {
+    if (isWakingUp) {
+      delay(100);
+      detachAllMotors();
+      wakeup();
+    } else if (isThinking) {
       detachAllMotors();
       think();
     } else {
-      if (!mouthServo.attached()) {
-        attachAllMotors();
-      }
-
       if (isChatting) {
         chat();
       }
     }
   };
   String command = Serial.readString();
+  isWakingUp = false;
   if (command == "think") {
     isThinking = true;
   } else {
+    if (!mouthServo.attached()) {
+      attachAllMotors();
+    }
+
     isThinking = false;
     if (command == "dispense") {
       dispensePill();
