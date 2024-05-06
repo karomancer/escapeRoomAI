@@ -23,21 +23,22 @@ def clean_string(text):
 arduino = serial.Serial(port=os.getenv("USB_PORT"), baudrate=9600, timeout=.1) 
 
 mic_name = os.getenv("MIC_NAME")
-mic_index = -1
 if mic_name:
-  for index, name in enumerate(sr.Microphone.list_microphone_names()):
-    if (mic_name in name):
-        mic_index = index
-        break
-else:
-   mic_index = 0
-   
-if mic_index == -1:
-  print("Couldn't find microphone. Exiting from program.")
-  arduino.write(b"error mic")
-  exit()
-
-print("Found mic at index " + str(mic_index))
+  mic_index = -1
+  if mic_name:
+    for index, name in enumerate(sr.Microphone.list_microphone_names()):
+      if (mic_name in name):
+          mic_index = index
+          break
+  else:
+    mic_index = 0
+    
+  if mic_index == -1:
+    print("Couldn't find microphone. Exiting from program.")
+    arduino.write(b"error mic")
+    exit()
+  
+  print("Found mic at index " + str(mic_index))
 
 speaker_name = os.getenv("SPEAKER_NAME")
 speaker_index = -1
@@ -47,13 +48,10 @@ if speaker_name:
     if speaker_name in device["name"]:
         speaker_index = index
         break
-else:
-   speaker_index = 0
-
-if speaker_index == -1 and speaker_name:
-  print("Couldn't find speaker " + speaker_name + ". Exiting from program.")
-  arduino.write(b"error speaker")
-  exit()
+  if speaker_index == -1:
+    print("Couldn't find speaker " + speaker_name + ". Exiting from program.")
+    arduino.write(b"error speaker")
+    exit()
 
 sounddevice.default.device = speaker_index
 print("Found speaker at index " + str(speaker_index))
@@ -69,7 +67,6 @@ parser.add_argument('-s', "--say")
 ########## Default program setup ############
 
 name = None
-awake = True
 
 client = OpenAI()
 print("Waking up Dr. Snuggles...")
@@ -81,7 +78,7 @@ dr_snuggles = client.beta.assistants.create(
 thread = client.beta.threads.create()
 
 listener = sr.Recognizer()
-microphone = sr.Microphone(device_index=mic_index)
+microphone = sr.Microphone(device_index=mic_index) if mic_name else sr.Microphone()
 
 print("Getting Dr. Snuggles her morning tea with honey...")
 voice_client = ElevenLabs(api_key=os.getenv("ELEVENLABS_API_KEY"))
@@ -100,6 +97,7 @@ def talk(text):
     arduino.write(b"chat start")
     stream(audio)
     arduino.write(b"chat stop")
+    time.sleep(2)
 
 def think():
     arduino.write(b"think")
@@ -107,7 +105,6 @@ def think():
 
 def listen():
     arduino.write(b"listen")
-    time.sleep(1)
 
 def bedtime():
     arduino.write(b"sleep")
@@ -123,8 +120,10 @@ def idle_voice():
 def take_name():
     try:
         with microphone as source:
+            listener.adjust_for_ambient_noise(source)
             print('Listening for a name...')
             voice = listener.listen(source, timeout=5.0)
+            print("")
             response = listener.recognize_google(voice)
             think()
             completion = client.chat.completions.create(
@@ -147,17 +146,13 @@ def take_name():
 def take_command():
     try:
         with microphone as source:
+            listener.adjust_for_ambient_noise(source)
             print('Listening...')
-            voice = listener.listen(source, timeout=8.0)
+            voice = listener.listen(source, timeout=5.0)
             command = listener.recognize_google(voice)
             think()
             command = command.lower()
-            print("Heard: ", '"' + command + '"')
-            if 'bye' in command or 'good night' in command:
-                talk("Bye bye " + name + ", I hope you have a great day!")
-                bedtime()
-                time.sleep(5)
-                exit()
+            print("Heard: ", '"' + command + '"')            
             return command
     except Exception as e:
         print("Listening error:")
@@ -191,8 +186,7 @@ def respond(command, playIdle=True):
         if any(x in text for x in ["medication", "here have some", "Zoloft", "Pfizer", "time for", "try some", "prescription", "meds", "SSRI", "Xanax", "Sertraline", "dose", "pills"]):
            time.sleep(1.5)
            arduino.write(b"dispense")
-           time.sleep(8)
-        listen()
+           time.sleep(4)
            
       except Exception as e:
           print("Responding error:")
@@ -202,11 +196,15 @@ def respond(command, playIdle=True):
           pass
 
 def run_snuggles():
+    listen()
     command = take_command()
     if (command):
+      if 'bye' in command or 'good night' in command:
+        talk("Bye bye " + name + ", I hope you have a great day!")
+        bedtime()
+        time.sleep(5)
+        exit()
       respond(command)
-      if "bye" in command:
-        awake = False
 
 
 
@@ -223,8 +221,9 @@ else:
   respond("Can you introduce yourself and ask for my name?", False)
 
   while name is None:
+    listen()
     name = take_name()
 
-  while awake:
+  while True:
     run_snuggles()
 

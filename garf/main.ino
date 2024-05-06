@@ -5,11 +5,10 @@ bool isChatting = false;
 bool isThinking = false;
 
 void defaultAllMotors() {
-  mouthServo.write(MIN_MOUTH_POS);
   tongueServo.write(MIN_TONGUE_POS);
-  dispenserServo.write(MAX_GEAR_VALUE);
 
   closeMouth();
+  resetDispenserWheel();
 }
 
 void attachAllMotors() {
@@ -20,7 +19,6 @@ void attachAllMotors() {
 }
 
 void detachAllMotors() {
-  defaultAllMotors();
   dispenserServo.detach();
   mouthServo.detach();
   tongueServo.detach();
@@ -33,7 +31,6 @@ void setup() {
   ring.begin();
   ring.setBrightness(32);
   ring.show();
-
   attachAllMotors();
 }
 
