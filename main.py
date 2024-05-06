@@ -112,17 +112,17 @@ def bedtime():
 
 def idle_voice():
     try :
-        talk(random.choice(["Mmmm", "Mmmhmmmm...", "Hmmmm", "Tell me more about how you're feeling...", "What else is on your mind?"]))
+        talk(random.choice(["Mmmm", "Mmmhmmmm...", "Hmmmm", "Tell me more about how you're feeling...", "What else is on your mind?", "Please start your sentence with 'Dr. Snuggles' if you want my expert advice!"]))
     except Exception as e:
         print("Uh oh....")
         print(e)
         pass
     
 def take_name():
-    listen()
     try:
         with microphone as source:
             print('Listening for a name...')
+            listen()
             voice = listener.listen(source, timeout=5.0)
             response = listener.recognize_google(voice)
             think()
