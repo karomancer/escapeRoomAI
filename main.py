@@ -215,7 +215,7 @@ print("All set up!")
 args = parser.parse_args()
 if (args.command):
    arduino.write(bytes(args.command, 'utf-8'))
-if (args.say):
+elif (args.say):
    talk(args.say)
 else:
   print("Getting situated and getting ready to introduce herself...")
