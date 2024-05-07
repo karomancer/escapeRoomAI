@@ -4,12 +4,10 @@ bool isWakingUp = true;
 bool isChatting = false;
 bool isThinking = false;
 
-void (*resetFunc)(void) = 0;
-
 void defaultAllMotors() {
   tongueServo.write(MIN_TONGUE_POS);
   resetDispenserWheel();
-  closeMouth();
+  // closeMouth();
 }
 
 void attachAllMotors() {
@@ -27,19 +25,28 @@ void detachAllMotors() {
 void setup() {
   Serial.begin(9600);
 
+  mouthServo.attach(MOUTH_PIN);
+  closeMouth();
+  mouthServo.detach();
+
+  tongueServo.attach(TONGUE_PIN);
+  tongueServo.write(MIN_TONGUE_POS);
+  tongueServo.detach();
+
+  dispenserServo.attach(DISPENSER_PIN);
+  resetDispenserWheel();
+  dispenserServo.detach();
+
   // Set up light
   ring.begin();
   ring.setBrightness(32);
   ring.show();
-  attachAllMotors();
-  defaultAllMotors();
 }
 
 void loop() {
   while (!Serial.available()) {
     if (isWakingUp) {
       delay(100);
-      detachAllMotors();
       wakeup();
     } else if (isThinking) {
       think();
@@ -93,7 +100,9 @@ void loop() {
       detachAllMotors();
       errorSpeaker();
     } else if (command == "reset") {
-      resetFunc();
+      bool isWakingUp = true;
+      bool isChatting = false;
+      bool isThinking = false;
     }
   }
 }
