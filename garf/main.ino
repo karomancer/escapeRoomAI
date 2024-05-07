@@ -5,9 +5,9 @@ bool isChatting = false;
 bool isThinking = false;
 
 void defaultAllMotors() {
-  tongueServo.write(MIN_TONGUE_POS);
+  pullTongueBackIn();
   resetDispenserWheel();
-  // closeMouth();
+  closeMouth();
 }
 
 void attachAllMotors() {
@@ -25,17 +25,9 @@ void detachAllMotors() {
 void setup() {
   Serial.begin(9600);
 
-  mouthServo.attach(MOUTH_PIN);
-  closeMouth();
-  mouthServo.detach();
-
-  tongueServo.attach(TONGUE_PIN);
-  tongueServo.write(MIN_TONGUE_POS);
-  tongueServo.detach();
-
-  dispenserServo.attach(DISPENSER_PIN);
-  resetDispenserWheel();
-  dispenserServo.detach();
+  attachAllMotors();
+  defaultAllMotors();
+  detachAllMotors();
 
   // Set up light
   ring.begin();

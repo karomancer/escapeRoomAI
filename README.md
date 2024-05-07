@@ -10,6 +10,7 @@ You will need the following:
 - Speakers
 - python version 3.11 or higher installed
 - `portaudio` installed (via `homebrew` or `apt-get`)
+- `mpv` installed (via `homebrew` or `apt-get`)
 - `ffmpeg` installed
 
 ## Installation

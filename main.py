@@ -53,8 +53,8 @@ if speaker_name:
     arduino.write(b"error speaker")
     exit()
 
-sounddevice.default.device = speaker_index
-print("Found speaker at index " + str(speaker_index))
+  sounddevice.default.device = speaker_index
+  print("Found speaker at index " + str(speaker_index))
 
 ########## CLI setup ############
 parser = argparse.ArgumentParser(
@@ -186,7 +186,7 @@ def respond(command, playIdle=True):
         if any(x in text for x in ["medication", "here have some", "Zoloft", "Pfizer", "time for", "try some", "prescription", "meds", "SSRI", "Xanax", "Sertraline", "dose", "pills"]):
            time.sleep(1.5)
            arduino.write(b"dispense")
-           time.sleep(8)
+           time.sleep(12)
            
       except Exception as e:
           print("Responding error:")
