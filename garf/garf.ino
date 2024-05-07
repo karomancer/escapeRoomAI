@@ -28,7 +28,7 @@ Servo dispenserServo;
  * Mouth constants
  **/
 #define MIN_MOUTH_POS   25
-#define MAX_MOUTH_POS   105 // 95 to chat, max 130 to install
+#define MAX_MOUTH_POS   115 // 95 to chat, max 130 to install
 
 #define MIN_TONGUE_POS  46
 #define MAX_TONGUE_POS  105

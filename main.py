@@ -97,13 +97,13 @@ def talk(text):
     arduino.write(b"chat start")
     stream(audio)
     arduino.write(b"chat stop")
-    time.sleep(2)
 
 def think():
     arduino.write(b"think")
     time.sleep(2)
 
 def listen():
+    time.sleep(2)
     arduino.write(b"listen")
 
 def bedtime():
@@ -186,7 +186,7 @@ def respond(command, playIdle=True):
         if any(x in text for x in ["medication", "here have some", "Zoloft", "Pfizer", "time for", "try some", "prescription", "meds", "SSRI", "Xanax", "Sertraline", "dose", "pills"]):
            time.sleep(1.5)
            arduino.write(b"dispense")
-           time.sleep(4)
+           time.sleep(8)
            
       except Exception as e:
           print("Responding error:")

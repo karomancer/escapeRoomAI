@@ -8,9 +8,8 @@ void (*resetFunc)(void) = 0;
 
 void defaultAllMotors() {
   tongueServo.write(MIN_TONGUE_POS);
-
-  closeMouth();
   resetDispenserWheel();
+  closeMouth();
 }
 
 void attachAllMotors() {
@@ -70,11 +69,13 @@ void loop() {
     if (command == "dispense") {
       dispensePill();
       stickTongueOut();
-      delay(3000);
+      delay(12000);
       pullTongueBackIn();
       delay(1000);
     } else if (command == "mouth open") {
       openMouth(MAX_MOUTH_POS);
+    } else if (command == "mouth close") {
+      closeMouth();
     } else if (command == "chat start") {
       isChatting = true;
     } else if (command == "wake") {
